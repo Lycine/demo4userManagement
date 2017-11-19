@@ -14,12 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.Map;
 
 /**
  * @author hongyu 2017-11-18
@@ -47,14 +43,22 @@ public class PassController {
             String username = request.getParameter("username");
             String password = request.getParameter("password");
             if (StringUtils.equals(username, KeyConstant.CORRECT_USERNAME) && StringUtils.equals(password, KeyConstant.CORRECT_PASSWORD)) {
-
-                helper.loginProcedure(response, request);
-
-                result.put("status", ResultConstant.SIGNIN_SUCCESS_STATUS);
-                result.put("info", ResultConstant.SIGNIN_SUCCESS_INFO);
+                try {
+                    helper.logoutProcedure(response, request);
+                    helper.signInProcedure(response, request);
+                    result.put("status", ResultConstant.SIGNIN_SUCCESS_STATUS);
+                    result.put("info", ResultConstant.SIGNIN_SUCCESS_INFO);
+                } catch (Exception e) {
+                    log.error(Thread.currentThread().getName() + " "
+                            + Thread.currentThread().getStackTrace()[1].getClassName() + " "
+                            + Thread.currentThread().getStackTrace()[1].getMethodName() + " "
+                            + e.getMessage(), e);
+                    result.put("status", ResultConstant.SIGNIN_FAILURE_STATUS);
+                    result.put("info", ResultConstant.SIGNIN_FAILURE_INFO);
+                }
             } else {
-                result.put("status", ResultConstant.SIGNIN_FAILURE_STATUS);
-                result.put("info", ResultConstant.SIGNIN_FAILURE_INFO);
+                result.put("status", ResultConstant.SIGNIN_BAD_USERNAME_PASSWORD_STATUS);
+                result.put("info", ResultConstant.SIGNIN_BAD_USERNAME_PASSWORD_INFO);
             }
         } catch (Exception e) {
             log.error(Thread.currentThread().getName() + " "
@@ -73,7 +77,7 @@ public class PassController {
         return result.toString();
     }
 
-    @RequestMapping(value = "/pass/logout", method = RequestMethod.POST)
+    @RequestMapping(value = "/pass/logout")
     @ResponseBody
     public String logout(HttpServletResponse response, HttpServletRequest request) {
         log.info("enter "
@@ -84,32 +88,14 @@ public class PassController {
         JSONObject result = new JSONObject();
 
         try {
-            HttpSession session = request.getSession();
-            User user = (User) session.getAttribute(KeyConstant.SESSION_USER);
-            ServletContext application = request.getServletContext();
-
-            //remove all cookie
-            Cookie[] cookies = request.getCookies();
-            if (null != cookies) {
-                for (Cookie cookie : cookies) {
-                    cookie.setValue(null);
-                    cookie.setMaxAge(0);
-                    response.addCookie(cookie);
-                }
-            }
-
-            //remove session
-            session.removeAttribute(KeyConstant.SESSION_USER);
-
-            //destory relation
-            Map<Integer, String> uidAndCookieMap = (Map<Integer, String>) application.getAttribute(KeyConstant.APPLICATION_UID_AND_COOKIE_MAP);
-            if (uidAndCookieMap.containsKey(user.getId())) {
-                uidAndCookieMap.remove(user.getId());
-                result.put("status", ResultConstant.LOGOUT_SUCCESS_STATUS);
-                result.put("info", ResultConstant.LOGOUT_SUCCESS_INFO);
-            } else {
+            boolean isAlreadyLogout = helper.logoutProcedure(response, request);
+            if (isAlreadyLogout) {
                 result.put("status", ResultConstant.LOGOUT_ALREADY_LOGOUT_STATUS);
                 result.put("info", ResultConstant.LOGOUT_ALREADY_LOGOUT_INFO);
+
+            } else {
+                result.put("status", ResultConstant.LOGOUT_SUCCESS_STATUS);
+                result.put("info", ResultConstant.LOGOUT_SUCCESS_INFO);
             }
         } catch (Exception e) {
             log.error(Thread.currentThread().getName() + " "
@@ -127,7 +113,7 @@ public class PassController {
         return result.toString();
     }
 
-    @RequestMapping(value = "/afterSignInCanVisit", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "/afterSignInCanVisit", produces = "application/json")
     @ResponseBody
     public String passedVisit(HttpServletResponse response, HttpServletRequest request) {
         log.info("enter "

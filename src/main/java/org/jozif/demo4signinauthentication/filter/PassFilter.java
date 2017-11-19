@@ -40,6 +40,7 @@ public class PassFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
         String[] excludedPageKeyWordArray = new String[]{"/pass"};
         String uri = request.getRequestURI();
         boolean isPass = false;
@@ -53,7 +54,7 @@ public class PassFilter extends OncePerRequestFilter {
         }
 
         //判断session
-        if (!isPass && (null != request.getSession().getAttribute("user"))) {
+        if (!isPass && (null != request.getSession().getAttribute(KeyConstant.SESSION_USER))) {
             isPass = true;
         }
 
@@ -68,7 +69,7 @@ public class PassFilter extends OncePerRequestFilter {
                         Map<Integer, String> uidAndCookieMap = (Map<Integer, String>) application.getAttribute(KeyConstant.APPLICATION_UID_AND_COOKIE_MAP);
                         for (Integer key : uidAndCookieMap.keySet()) {
                             if (StringUtils.equals(uidAndCookieMap.get(key), cookie.getValue())) {
-                                helper.loginProcedure(response, request);
+                                helper.signInProcedure(response, request);
                                 isPass = true;
                                 break;
                             }

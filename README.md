@@ -14,6 +14,6 @@ Usage
 ----------- 
 After start project
 1. send post request to "localhost:8080/pass/signIn" with payload username=123 and password=abc123, you will see "sign in success".
-2. send post request to "localhost:8080/afterSignInCanVisit", you will see "hello 123". Means sign in success.
-3. send post request to "localhost:8080/pass/logout", you will see "logout success!".
+2. send request to "localhost:8080/afterSignInCanVisit", you will see "hello 123". Means sign in success.
+3. send request to "localhost:8080/pass/logout", you will see "logout success!".
 

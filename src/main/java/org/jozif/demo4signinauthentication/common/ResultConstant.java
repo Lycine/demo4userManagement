@@ -6,7 +6,7 @@ public class ResultConstant {
     public static final String SIGNIN_FIRST_STATUS = "2";
     public static final String SIGNIN_FIRST_INFO = "sign in first";
     public static final String SIGNIN_FAILURE_STATUS = "3";
-    public static final String SIGNIN_FAILURE_INFO = "bad username or password";
+    public static final String SIGNIN_FAILURE_INFO = "sign in error";
     public static final String SIGNIN_UNKNOWN_STATUS = "4";
     public static final String SIGNIN_UNKNOWN_INFO = "unknown error";
     public static final String LOGOUT_SUCCESS_STATUS = "5";
@@ -17,4 +17,6 @@ public class ResultConstant {
     public static final String LOGOUT_UNKNOWN_INFO = "unknown error";
     public static final String PASSED_VISIT_SUCCESS_STATUS = "8";
     public static final String PASSED_VISIT_SUCCESS_INFO = "success";
+    public static final String SIGNIN_BAD_USERNAME_PASSWORD_STATUS = "9";
+    public static final String SIGNIN_BAD_USERNAME_PASSWORD_INFO = "bad username or password";
 }

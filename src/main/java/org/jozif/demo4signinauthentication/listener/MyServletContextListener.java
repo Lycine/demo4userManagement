@@ -26,7 +26,7 @@ public class MyServletContextListener implements ServletContextListener {
 
         ServletContext application = servletContextEvent.getServletContext();
 
-        String ticketName = UUID.randomUUID().toString().replace("-", "").toUpperCase();
+        String ticketName = UUID.randomUUID().toString().substring(0, 10).replace("-", "").toUpperCase();
         application.setAttribute("ticketName", ticketName);
         log.info("ticketName: " + ticketName + " initialized");
 
