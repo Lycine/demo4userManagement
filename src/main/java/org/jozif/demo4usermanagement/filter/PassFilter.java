@@ -1,10 +1,10 @@
-package org.jozif.demo4signinauthentication.filter;
+package org.jozif.demo4usermanagement.filter;
 
 import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.lang3.StringUtils;
-import org.jozif.demo4signinauthentication.common.Helper;
-import org.jozif.demo4signinauthentication.common.KeyConstant;
-import org.jozif.demo4signinauthentication.common.ResultConstant;
+import org.jozif.demo4usermanagement.common.Helper;
+import org.jozif.demo4usermanagement.common.KeyConstant;
+import org.jozif.demo4usermanagement.common.ResultConstant;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +33,7 @@ public class PassFilter extends OncePerRequestFilter {
     @Autowired
     private Helper helper;
 
-    @Value("${demo4signInAuthentication.cookieMaxAgeHour}")
+    @Value("${demo4userManagement.cookieMaxAgeHour}")
     private String cookieMaxAgeHour;
 
     @Override
@@ -61,7 +61,7 @@ public class PassFilter extends OncePerRequestFilter {
         //判断cookie
         if (!isPass) {
             Cookie[] cookies = request.getCookies();
-            if (null != cookies){
+            if (null != cookies) {
                 ServletContext application = request.getServletContext();
                 String ticketName = (String) application.getAttribute(KeyConstant.TICKET_NAME);
                 for (Cookie cookie : cookies) {
@@ -69,7 +69,7 @@ public class PassFilter extends OncePerRequestFilter {
                         Map<Integer, String> uidAndCookieMap = (Map<Integer, String>) application.getAttribute(KeyConstant.APPLICATION_UID_AND_COOKIE_MAP);
                         for (Integer key : uidAndCookieMap.keySet()) {
                             if (StringUtils.equals(uidAndCookieMap.get(key), cookie.getValue())) {
-                                helper.signInProcedure(response, request);
+                                helper.signInProcedure(response, request, Integer.parseInt(uidAndCookieMap.get(key)));
                                 isPass = true;
                                 break;
                             }

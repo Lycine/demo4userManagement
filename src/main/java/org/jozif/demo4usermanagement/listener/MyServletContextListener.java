@@ -1,4 +1,4 @@
-package org.jozif.demo4signinauthentication.listener;
+package org.jozif.demo4usermanagement.listener;
 
 import lombok.extern.apachecommons.CommonsLog;
 

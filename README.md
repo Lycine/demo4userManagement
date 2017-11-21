@@ -8,12 +8,16 @@ Environment Support
 
 Features
 -------------
-Demo project designed for login authentication with cookie, session via Spring Boot
+Demo project designed for user management via Spring Boot
 
 Usage
 ----------- 
-After start project
-1. send post request to "localhost:8080/pass/signIn" with payload username=123 and password=abc123, you will see "sign in success".
-2. send request to "localhost:8080/afterSignInCanVisit", you will see "hello 123". Means sign in success.
-3. send request to "localhost:8080/pass/logout", you will see "logout success!".
+1. Create a new user table in the database, build table sql in the deploy folder.
+2. Call the helperGeneratePasswordAndSalt method in Demo4userManagementTests to generate the salt and hash of the password you want.
+3. in the user table to create a few new test data.
+4. In the applicatoin.yml modify MySQL connection information.
+5. Start the project.
+6. Send the request to "localhost: 8080 / pass / signIn" with the following parameters: email = xxx and password = xxx. The login "success in sign" will be displayed.
+7. Send the request to "localhost: 8080 / afterSignInCanVisit" and "hello xxx" will be displayed, which means the login is successful.
+8. Send the request to "localhost: 8080 / pass / logout" and "logout success!" Will be displayed.
 
